@@ -141,15 +141,6 @@ def print_results(N_values, rect_results, trap_results, exact_value):
     """
     # 学生在此实现结果打印
     # 提示: 格式化输出N值和对应积分结果
-    def print_results(N_values, rect_results, trap_results, exact_value):
-    """打印计算结果表格
-    
-    参数:
-        N_values (list): 分割数列表
-        rect_results (list): 矩形法结果列表
-        trap_results (list): 梯形法结果列表
-        exact_value (float): 精确值
-    """
     print("\n数值积分结果比较:")
     print("N\t矩形法结果\t矩形法误差\t梯形法结果\t梯形法误差")
     for i, N in enumerate(N_values):
