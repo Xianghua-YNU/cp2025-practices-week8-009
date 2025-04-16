@@ -109,7 +109,28 @@ def plot_errors(deltas, forward_errors, central_errors):
     # 1. 使用plt.loglog绘制双对数坐标图
     # 2. 添加参考线表示理论收敛阶数
     # 3. 添加图例、标题和坐标轴标签
-    pass
+    plt.figure(figsize=(10, 6))
+    
+    # 绘制前向差分误差
+    plt.loglog(deltas, forward_errors, 'o-', label='Forward Difference')
+    
+    # 绘制中心差分误差
+    plt.loglog(deltas, central_errors, 's-', label='Central Difference')
+    
+    # 添加参考线
+    plt.loglog(deltas, deltas, '--', label='First Order O(h)')
+    plt.loglog(deltas, np.array(deltas)**2, '--', label='Second Order O($h^2$)')
+    
+    # 设置图表
+    plt.xlabel('Step Size $\\delta$')  # Fixed escape sequence
+    plt.ylabel('Relative Error')
+    plt.title('Error vs Step Size in Numerical Differentiation')
+    plt.grid(True, which="both", ls="-")
+    plt.legend()
+    
+    # 保存图表
+    plt.savefig('error_vs_stepsize.png', dpi=300)
+    plt.show()
 
 def print_results(deltas, forward_errors, central_errors):
     """打印计算结果表格
@@ -121,7 +142,12 @@ def print_results(deltas, forward_errors, central_errors):
     """
     # 学生在此实现结果打印
     # 提示: 格式化输出步长和对应误差
-    pass
+    print("步长(δ)\t前向差分误差\t中心差分误差")
+    print("-" * 50)
+    
+    for i in range(len(deltas)):
+        print(f"{deltas[i]:.2e}\t{forward_errors[i]:.6e}\t{central_errors[i]:.6e}")
+
 
 def main():
     """主函数"""
