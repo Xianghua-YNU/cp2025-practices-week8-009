@@ -1,5 +1,4 @@
 import numpy as np
-
 def standard_formula(a, b, c):
     """使用标准公式求解二次方程 ax^2 + bx + c = 0
     
@@ -18,7 +17,6 @@ def standard_formula(a, b, c):
     x1 = (-b + sqrt_D) / (2*a)
     x2 = (-b - sqrt_D) / (2*a)
     return (x1, x2)
-    pass
 
 def alternative_formula(a, b, c):
     """使用替代公式求解二次方程 ax^2 + bx + c = 0
@@ -32,7 +30,7 @@ def alternative_formula(a, b, c):
     返回:
         tuple: 方程的两个根 (x1, x2) 或 None(无实根)
     """
-   D = b**2 - 4*a*c
+    D = b**2 - 4*a*c
     if D < 0:
         return None
     if c == 0:
@@ -55,7 +53,7 @@ def stable_formula(a, b, c):
     返回:
         tuple: 方程的两个根 (x1, x2) 或 None(无实根)
     """
-   if a == 0:
+    if a == 0:
         # 处理一次方程的情况
         if b == 0:
             return (0.0, 0.0) if c == 0 else None
@@ -81,7 +79,6 @@ def stable_formula(a, b, c):
         else:
             x2 = c / (a * x1)
         return (x1, x2)
-    pass
 
 def main():
     test_cases = [
