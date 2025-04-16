@@ -11,7 +11,13 @@ def standard_formula(a, b, c):
     返回:
         tuple: 方程的两个根 (x1, x2) 或 None(无实根)
     """
-    # 学生在此处实现代码
+    D = b**2 - 4*a*c
+    if D < 0:
+        return None
+    sqrt_D = np.sqrt(D)
+    x1 = (-b + sqrt_D) / (2*a)
+    x2 = (-b - sqrt_D) / (2*a)
+    return (x1, x2)
     pass
 
 def alternative_formula(a, b, c):
@@ -26,8 +32,17 @@ def alternative_formula(a, b, c):
     返回:
         tuple: 方程的两个根 (x1, x2) 或 None(无实根)
     """
-    # 学生在此处实现代码
-    pass
+   D = b**2 - 4*a*c
+    if D < 0:
+        return None
+    if c == 0:
+        x1 = 0.0
+        x2 = -b / a
+        return (x1, x2)
+    sqrt_D = np.sqrt(D)
+    x1 = (2*c) / (-b - sqrt_D)
+    x2 = (2*c) / (-b + sqrt_D)
+    return (x1, x2)
 
 def stable_formula(a, b, c):
     """稳定的二次方程求根程序，能够处理各种特殊情况和数值稳定性问题
@@ -40,7 +55,32 @@ def stable_formula(a, b, c):
     返回:
         tuple: 方程的两个根 (x1, x2) 或 None(无实根)
     """
-    # 学生在此处实现代码
+   if a == 0:
+        # 处理一次方程的情况
+        if b == 0:
+            return (0.0, 0.0) if c == 0 else None
+        else:
+            x = -c / b
+            return (x, x)
+    else:
+        if c == 0:
+            # 处理c=0的情况，根为0和 -b/a
+            return (0.0, -b / a)
+        D = b**2 - 4*a*c
+        if D < 0:
+            return None
+        sqrt_D = np.sqrt(D)
+        # 根据b的符号选择稳定的计算方式
+        if b >= 0:
+            x1 = (-b - sqrt_D) / (2*a)
+        else:
+            x1 = (-b + sqrt_D) / (2*a)
+        # 计算另一个根
+        if x1 == 0:
+            x2 = -b / a  # 当x1为0时，c=0已处理，此处不会触发
+        else:
+            x2 = c / (a * x1)
+        return (x1, x2)
     pass
 
 def main():
