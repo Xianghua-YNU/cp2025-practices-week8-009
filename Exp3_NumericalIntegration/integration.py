@@ -12,7 +12,7 @@ def f(x):
         float: 函数计算结果
     """
     # 学生在此实现被积函数
-    pass
+    return np.sqrt(1 - x**2)
 
 def rectangle_method(f, a, b, N):
     """矩形法（左矩形法）计算积分
@@ -30,8 +30,13 @@ def rectangle_method(f, a, b, N):
     # 提示:
     # 1. 计算步长 h = (b - a)/N
     # 2. 使用循环计算每个矩形的面积并累加
-    pass
-
+    h = (b - a) / N
+    integral = 0.0
+    for k in range(N):
+        xk = a + h * k
+        integral += h * f(xk)
+    return integral
+    
 def trapezoid_method(f, a, b, N):
     """梯形法计算积分
     
@@ -48,7 +53,13 @@ def trapezoid_method(f, a, b, N):
     # 提示:
     # 1. 计算步长 h = (b - a)/N
     # 2. 使用循环计算每个梯形的面积并累加
-    pass
+    h = (b - a) / N
+    integral = 0.0
+    for k in range(N):
+        xk = a + h * k
+        xk1 = a + h * (k + 1)
+        integral += 0.5 * h * (f(xk) + f(xk1))
+    return integral
 
 def calculate_errors(a, b, exact_value):
     """计算不同N值下各方法的误差
@@ -70,7 +81,22 @@ def calculate_errors(a, b, exact_value):
     # 1. 定义不同的N值列表
     # 2. 对每个N值计算两种方法的积分近似值
     # 3. 计算相对误差 = |近似值 - 精确值| / |精确值|
-    pass
+    N_values = [10, 100, 1000, 10000, 100000]
+    h_values = []
+    rect_errors = []
+    trap_errors = []
+    
+    for N in N_values:
+        h = (b - a) / N
+        h_values.append(h)
+        
+        rect_val = rectangle_method(f, a, b, N)
+        trap_val = trapezoid_method(f, a, b, N)
+        
+        rect_errors.append(abs(rect_val - exact_value) / abs(exact_value))
+        trap_errors.append(abs(trap_val - exact_value) / abs(exact_value))
+    
+    return N_values, h_values, rect_errors, trap_errors
 
 def plot_errors(h_values, rect_errors, trap_errors):
     """绘制误差-步长关系图
@@ -85,7 +111,24 @@ def plot_errors(h_values, rect_errors, trap_errors):
     # 1. 使用plt.loglog绘制双对数坐标图
     # 2. 添加参考线表示理论收敛阶数
     # 3. 添加图例、标题和坐标轴标签
-    pass
+    plt.figure(figsize=(10, 6))
+    plt.loglog(h_values, rect_errors, 'o-', label='矩形法')
+    plt.loglog(h_values, trap_errors, 's-', label='梯形法')
+    
+    # 添加参考线表示理论收敛阶数
+    x_ref = np.array(h_values)
+    y_ref1 = x_ref  # 矩形法理论收敛阶数 O(h)
+    y_ref2 = x_ref**2  # 梯形法理论收敛阶数 O(h^2)
+    
+    plt.loglog(x_ref, y_ref1, '--', label='O(h) 参考线')
+    plt.loglog(x_ref, y_ref2, '--', label='O(h²) 参考线')
+    
+    plt.xlabel('步长 h (对数坐标)')
+    plt.ylabel('相对误差 (对数坐标)')
+    plt.title('数值积分方法的收敛性分析')
+    plt.legend()
+    plt.grid(True, which="both", ls="--")
+    plt.show()
 
 def print_results(N_values, rect_results, trap_results, exact_value):
     """打印计算结果表格
@@ -98,7 +141,12 @@ def print_results(N_values, rect_results, trap_results, exact_value):
     """
     # 学生在此实现结果打印
     # 提示: 格式化输出N值和对应积分结果
-    pass
+    print("\n数值积分结果比较:")
+    print("N\t矩形法结果\t矩形法误差\t梯形法结果\t梯形法误差")
+    for i, N in enumerate(N_values):
+        rect_err = abs(rect_results[i] - exact_value) / abs(exact_value)
+        trap_err = abs(trap_results[i] - exact_value) / abs(exact_value)
+        print(f"{N}\t{rect_results[i]:.8f}\t{rect_err:.2e}\t{trap_results[i]:.8f}\t{trap_err:.2e}")
 
 def time_performance_test(a, b, max_time=1.0):
     """测试在限定时间内各方法能达到的最高精度
@@ -113,8 +161,51 @@ def time_performance_test(a, b, max_time=1.0):
     # 1. 从小的N值开始测试
     # 2. 逐步增加N值直到计算时间接近max_time
     # 3. 记录每种方法能达到的最高精度
-    pass
-
+    print("\n时间性能测试 (1秒内最高精度):")
+    
+    # 测试矩形法
+    N = 10
+    best_rect_N = 0
+    best_rect_err = float('inf')
+    start_time = time.time()
+    
+    while True:
+        current_time = time.time()
+        if current_time - start_time > max_time:
+            break
+        
+        rect_val = rectangle_method(f, a, b, N)
+        rect_err = abs(rect_val - exact_value) / abs(exact_value)
+        
+        if rect_err < best_rect_err:
+            best_rect_err = rect_err
+            best_rect_N = N
+        
+        N *= 2
+    
+    # 测试梯形法
+    N = 10
+    best_trap_N = 0
+    best_trap_err = float('inf')
+    start_time = time.time()
+    
+    while True:
+        current_time = time.time()
+        if current_time - start_time > max_time:
+            break
+        
+        trap_val = trapezoid_method(f, a, b, N)
+        trap_err = abs(trap_val - exact_value) / abs(exact_value)
+        
+        if trap_err < best_trap_err:
+            best_trap_err = trap_err
+            best_trap_N = N
+        
+        N *= 2
+    
+    print(f"矩形法: N={best_rect_N}, 相对误差={best_rect_err:.2e}")
+    print(f"梯形法: N={best_trap_N}, 相对误差={best_trap_err:.2e}")
+            
 def calculate_convergence_rate(h_values, errors):
     """计算收敛阶数
     
@@ -127,7 +218,11 @@ def calculate_convergence_rate(h_values, errors):
     """
     # 学生在此实现收敛阶数计算
     # 提示: 使用最小二乘法拟合log(h)和log(error)的关系
-    pass
+    log_h = np.log(np.array(h_values))
+    log_err = np.log(np.array(errors))
+    A = np.vstack([log_h, np.ones(len(log_h))]).T
+    slope, _ = np.linalg.lstsq(A, log_err, rcond=None)[0]
+    return slope
 
 def main():
     """主函数"""
